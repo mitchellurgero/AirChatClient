@@ -4,6 +4,24 @@ AirChat - An XMPP WebClient
 AirChat is an XMPP web client that uses StropheJS, BOSH, and Bootstrap. This client is lightweight on resources for both server and client side. 
 
 The client supports TLS connections and Group Chats only.
+
+### Third-Party extensions or libraries used
+
+- Bootstrap3
+- StropheJS
+- AES.js (B. Poettering)
+
+# Features
+
+- SSL/TLS encrypted Group Chat (MUC Support)
+- Working login and registration system
+- elegant, and simple bootstrap theme
+- light on resources both server and client side
+- Supports password protected rooms
+- Built-in debug mode for resolve issues with connections, etc
+
+
+
 # Installing AirChat
 
 ### Prerequisites

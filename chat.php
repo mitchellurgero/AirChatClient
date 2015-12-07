@@ -105,12 +105,115 @@ function onMessage(msg) {
 	var usrColor = null;
 	var frChar = res2.charAt(0);
 	switch(frChar) {
-    	case "t":
+    	case "a":
         	usrColor = "#0000b3";
         	break;
-    	case "a":
-        	
-    		break;
+        case "b":
+        	usrColor = "#D24D57";
+        	break;
+        case "c":
+        	usrColor = "#F22613";
+        	break;
+        case "d":
+        	usrColor = "#D91E18";
+        	break;
+        case "e":
+        	usrColor = "#96281B";
+        	break;
+        case "f":
+        	usrColor = "#EF4836";
+        	break;
+        case "g":
+        	usrColor = "#DB0A5B";
+        	break;
+        case "h":
+        	usrColor = "#D2527F";
+        	break;
+        case "i":
+        	usrColor = "#663399";
+        	break;
+        case "j":
+        	usrColor = "#9A12B3";
+        	break;
+        case "k":
+        	usrColor = "#E26A6A";
+        	break;
+        case "l":
+        	usrColor = "#446CB3";
+        	break;
+        case "m":
+        	usrColor = "#22A7F0";
+        	break;
+        case "n":
+        	usrColor = "#22313F";
+        	break;
+        case "o":
+        	usrColor = "#19B5FE";
+        	break;
+        case "p":
+        	usrColor = "#26A65B";
+        	break;
+        case "q":
+        	usrColor = "#36D7B7";
+        	break;
+        case "r":
+        	usrColor = "#E87E04";
+        	break;
+        case "s":
+        	usrColor = "#D35400";
+        	break;
+        case "t":
+        	usrColor = "#6C7A89";
+        	break;
+        case "u":
+        	usrColor = "#BFBFBF";
+        	break;
+        case "v":
+        	usrColor = "#1E824C";
+        	break;
+        case "w":
+        	usrColor = "#86E2D5";
+        	break;
+        case "x":
+        	usrColor = "#68C3A3";
+        	break;
+        case "y":
+        	usrColor = "#66CC99";
+        	break;
+        case "z":
+        	usrColor = "#4B77BE";
+        	break;
+        case "1":
+        	usrColor = "#19B5FE";
+        	break;
+        case "2":
+        	usrColor = "#2C3E50";
+        	break;
+        case "3":
+        	usrColor = "#C5EFF7";
+        	break;
+        case "4":
+        	usrColor = "#6BB9F0";
+        	break;
+        case "5":
+        	usrColor = "#9B59B6";
+        	break;
+        case "6":
+        	usrColor = "#BF55EC";
+        	break;
+        case "7":
+        	usrColor = "#F62459";
+        	break;
+        case "8":
+        	usrColor = "#F1A9A0";
+        	break;
+        case "9":
+        	usrColor = "#F64747";
+        	break;
+        case "0":
+        	usrColor = "#0000b3";
+        	break;
+        
     	default:
         	usrColor = "black";
         	break;
@@ -254,7 +357,7 @@ window.onbeforeunload = confirmExit;
 					</table>
 					</div>
 				</div>
-                	<div class="panel-footer"><input type="text" id="message" style="width:90%;" onkeyup="handleKeyPress(event);">&nbsp;<input type="submit" id="sendMsg" class="btn btn-primary" value="Send" onClick="sendMsg()">
+                	<div class="panel-footer"><input type="text" id="message" style="width:90%;" onkeyup="handleKeyPress(event);" autocomplete="off">&nbsp;<input type="submit" id="sendMsg" class="btn btn-primary" value="Send" onClick="sendMsg()">
                 </div>
             </div>
 			</div>

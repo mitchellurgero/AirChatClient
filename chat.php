@@ -44,11 +44,25 @@ echo'';
 	var connection = null;
 	var crypto = null;
 	var xmpp_pass = "<?php echo $_POST['password']; ?>";
+	setInterval(function(){ keepAlive(); }, 600000);
 	function log(msg) 
 	{
     	$('#log').append('\n').append(document.createTextNode(msg));
 	}
-
+	function keepAlive(){
+		$.ajax({
+			method:'post',
+			url:'./alive.php',
+			data:{
+				blank:"blank"
+			},
+			success:function(result) {
+				//Keep Alive is working.
+			}
+		}).fail(function(e) {
+			//Error occured.
+		});
+	}
 	function rawInput(data)
 	{
     	log('RECV: ' + data);
@@ -85,7 +99,7 @@ echo'';
 			log('Strophe is connected.');
 			connection.addHandler(onMessage, null, 'message', 'groupchat'); 
 			connection.addHandler(onPresence, null, 'presence');
-			connection.muc.join("<?php echo $_POST['room']; ?>_room@<?php echo $fqdn_xmpp; ?>", "<?php echo $_SESSION['username']; ?>", onMessage, onPresence, onRoster, "<?php echo $_POST['password']; ?>", null);
+			connection.muc.join("<?php echo $_POST['room']; ?>_room@<?php echo $fqdn_xmpp; ?>", "<?php echo $_SESSION['username']; ?>", onMessage, onPresence, onRoster, xmpp_pass, null);
 			var d = $pres({"from":"<?php echo $_SESSION['username']."@".$fqdn_xmpp; ?>","to":"<?php echo $_POST['room']; ?>_room@<?php echo $muc_xmpp; ?>/<?php echo $_SESSION['username']; ?>"}).c("x",{"xmlns":"http://jabber.org/protocol/muc"});
     		connection.send(d.tree());
 			$("#sendMsg").prop( "disabled", false );

@@ -399,7 +399,7 @@ function foot(){
   <div class="container-fluid">
     <div>
     <br />
-    <center style="color:white">Powered By <a href="#">AirChat</a></center>
+    <center style="color:white">Powered By <a href="https://github.com/mitchellurgero/AirChatClient" target="_blank">AirChat</a></center>
     </div>
   </div>
 </nav>

@@ -175,7 +175,7 @@ function dsDash(){
     <div class="row">
     	<div class="col-md-4 col-md-offset-2">
     		<div class="panel panel-default">
-                <div class="panel-heading"> <strong class="">Contact List:</strong>
+                <div class="panel-heading"> <strong class="">Contact List:(Work in Progress!)</strong>
                 </div>
                 <div class="panel-body">
                 	<div id="rosterDiv" style="overflow-y: auto; width:100%; height:180px;">
@@ -278,6 +278,7 @@ function head(){
     <script src='js/jquery1.11.3.js'></script>
     <script src='strophejs/strophe.js'></script>
     <script src='strophejs/strophe.register.js'></script>
+    <script src='strophejs/strophe.roster.js'></script>
     <script src="js/bootstrap.js"></script>
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -292,6 +293,31 @@ function head(){
     <script>
     var BOSH_SERVICE = "<?php echo $http_bind; ?>";
 	var connection = null;
+	var isDash = "<?php echo $_SESSION['dash'];?>";
+	function onRoster(data){
+		//console.log(data);
+		connection.roster.requestRoster(function(roster){
+   			var items = roster.getItems();
+   			for( var i = 0; i < items.length; i++ ){
+      			var item = items[i];
+      			var res = Strophe.getText(item);
+				var tbl = document.getElementById("rosterList");
+				var row = tbl.insertRow(-1);
+				var cell1 = row.insertCell(0);
+				cell1.innerHTML = '<b>'+res+'</b>';
+				cell1.style.width = "100px";
+				cell1.style.color = "black";
+   			}
+		});
+		
+		
+	}
+	function onPresence(data){
+		
+	}
+	function onMessage(data){
+		
+	}
    	function onConnect(status)
 	{
     	if (status == Strophe.Status.CONNECTING) {
@@ -349,6 +375,9 @@ function head(){
 			
     	}
 	}
+	function rawOutput(){
+		
+	}
 	function login(){
 	if(document.getElementById("username").value == "" || document.getElementById("password").value == ""){
 		
@@ -400,6 +429,40 @@ function head(){
 			
     	}
     }
+	function onConnectDash(status)
+	{
+    	if (status == Strophe.Status.CONNECTING) {
+    	
+    	} else if (status == Strophe.Status.CONNFAIL) {
+    	
+    	} else if (status == Strophe.Status.DISCONNECTING) {
+    	
+    	} else if (status == Strophe.Status.DISCONNECTED) {
+
+    	} else if (status == Strophe.Status.CONNECTED) {
+    		connection.send($pres());
+    		var iq = $iq({type: 'get'}).c('query', {xmlns: 'jabber:iq:roster'});
+			connection.sendIQ(iq, onRoster);
+			connection.addHandler(onMessage, null, 'message', 'groupchat'); 
+			connection.addHandler(onPresence, null, 'presence');
+			connection.addHandler(onRoster, "jabber:iq:roster", "iq", "set");
+			//connection.roster.get(onRoster, 0);
+			
+			
+			
+    	}
+	}
+$(document).ready(function () {
+	if(isDash == "true"){
+		connection = new Strophe.Connection(BOSH_SERVICE);
+    	var usr = "<?php echo $_SESSION['username']."@".$fqdn_xmpp;?>";
+    	var pwd = "<?php echo $_SESSION['ps'];?>";
+    	connection.rawInput = rawInput;
+    	connection.rawOutput = rawOutput;
+		connection.connect(usr, pwd, onConnectDash);
+	}
+
+});
     </script>
   </head>
 	<?php

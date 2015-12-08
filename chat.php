@@ -414,7 +414,7 @@ function detectmob() {
   }
 }
 $(document).ready(function () {
-$("#sendMsg").prop( "disabled", true );
+	$("#sendMsg").prop( "disabled", true );
     connection = new Strophe.Connection(BOSH_SERVICE);
     connection.rawInput = rawInput;
     connection.rawOutput = rawOutput;

@@ -10,5 +10,5 @@ $muc_xmpp = "conference.ds4.urgero.org"; //MUC service URL, configured on server
 $html_title = "AirChat"; //Title of the login and dashboard
 $html_desc = "A chat client for all."; //Description or slogan for login page.
 
-$DEBUG = "false"; // Enabling Debug Mode will disable the error handler modal (The popup that comes up when an error occurs for a user) and it enables logging so you can look at the log and see what happened.
+$DEBUG = "true"; // Enabling Debug Mode will disable the error handler modal (The popup that comes up when an error occurs for a user) and it enables logging so you can look at the log and see what happened.
 ?>

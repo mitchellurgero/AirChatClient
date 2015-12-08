@@ -174,11 +174,18 @@ function dsDash(){
   </div>
     <div class="row">
     	<div class="col-md-4 col-md-offset-2">
-    		<br /><br /><br />
-    		<p>
-    		Type the room name and password for that room in the fields to the right.<br /><br />
-    		
-    		</p>
+    		<div class="panel panel-default">
+                <div class="panel-heading"> <strong class="">Contact List:</strong>
+                </div>
+                <div class="panel-body">
+                	<div id="rosterDiv" style="overflow-y: auto; width:100%; height:300px;">
+                    <table id="rosterList" class="table table-striped table-bordered table-hover" style="width:100%; max-height:100%;">
+                   	</table>
+                   	</div>
+                    
+                </div>
+                <div class="panel-footer"><a href="logout.php">Logout</a></div>
+                </div>
     	</div>
         <div class="col-md-4">
             <div class="panel panel-default">
@@ -186,7 +193,7 @@ function dsDash(){
 
                 </div>
                 <div class="panel-body">
-                    <form class="form-horizontal" role="form" action="chat.php" method="POST">
+                    <form class="form-horizontal" role="form" action="chat.php" method="POST" target="_blank" onsubmit="clearText()">
                         <div class="form-group">
                             <label for="room" class="col-sm-3 control-label">Room:</label>
                             <div class="col-sm-9">
@@ -214,7 +221,7 @@ function dsDash(){
                     </form>
                     
                 </div>
-                <div class="panel-footer"><a href="logout.php">Logout</a></div>
+                <div class="panel-footer">&nbsp;</div>
                 </div>
             </div>
         </div>
@@ -319,6 +326,14 @@ function head(){
 			});
 			connection.disconnect();
     	}
+	}
+	function clearText(){
+		setTimeout(function(){clearTextTime();}, 2000);
+		
+	}
+	function clearTextTime(){
+		document.getElementById("room").value="";
+		document.getElementById("password").value="";
 	}
 	function rawInput(data)
 	{

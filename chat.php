@@ -41,6 +41,7 @@ echo'';
     <script>
     var window_focus;
     var inRoom = false;
+    var windowClose = false;
     var DEBUG_MODE = "<?php echo $DEBUG; ?>";
    	var BOSH_SERVICE = "<?php echo $http_bind; ?>";
 	var connection = null;
@@ -125,6 +126,11 @@ echo'';
 			log('Strophe is disconnecting.');
     	} else if (status == Strophe.Status.DISCONNECTED) {
 			log('Strophe is disconnected.');
+			if(windowClose == true){
+				window.close();   // Closes the new window
+			} else {
+				//An error occured.
+			}
     	} else if (status == Strophe.Status.CONNECTED) {
 			log('Strophe is connected.');
 			connection.addHandler(onMessage, null, 'message', 'groupchat'); 
@@ -386,6 +392,10 @@ function handleKeyPress(e){
      $( "#sendMsg" ).click();
   }
 }
+function closeWin() {
+	connection.disconnect();
+    windowClose = true;
+}
 $(document).ready(function () {
 $("#sendMsg").prop( "disabled", true );
     connection = new Strophe.Connection(BOSH_SERVICE);
@@ -451,7 +461,7 @@ window.onbeforeunload = confirmExit;
 							
 							</table>
 						</div>
-						<div class="panel-footer"><a href="logout.php" class="btn btn-info" onClick="discon()">Logout</a>&nbsp;<a href="index.php" class="btn btn-info" onClick="discon()">Change Rooms</a>
+						<div class="panel-footer"><a href="logout.php" class="btn btn-info" onClick="discon()">Logout</a>&nbsp;<a href="#" class="btn btn-info" onClick="closeWin()">Leave Room</a>
     	</div>
 					</div>
 			</div>

@@ -178,7 +178,7 @@ function dsDash(){
                 <div class="panel-heading"> <strong class="">Contact List:</strong>
                 </div>
                 <div class="panel-body">
-                	<div id="rosterDiv" style="overflow-y: auto; width:100%; height:300px;">
+                	<div id="rosterDiv" style="overflow-y: auto; width:100%; height:180px;">
                     <table id="rosterList" class="table table-striped table-bordered table-hover" style="width:100%; max-height:100%;">
                    	</table>
                    	</div>
@@ -193,7 +193,7 @@ function dsDash(){
 
                 </div>
                 <div class="panel-body">
-                    <form class="form-horizontal" role="form" action="chat.php" method="POST" target="_blank" onsubmit="clearText()">
+                    <form class="form-horizontal" role="form" action="chat.php" method="POST" target="_blank" onsubmit="clearText()" style="width:100%; height:180px;">
                         <div class="form-group">
                             <label for="room" class="col-sm-3 control-label">Room:</label>
                             <div class="col-sm-9">

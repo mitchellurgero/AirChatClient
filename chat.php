@@ -484,7 +484,7 @@ window.onbeforeunload = confirmExit;
 							
 							</table>
 						</div>
-						<div class="panel-footer"><a href="logout.php" class="btn btn-info" onClick="discon()">Logout</a>&nbsp;<a href="#" class="btn btn-info" onClick="closeWin()">Leave Room</a>
+						<div class="panel-footer"><a href="#" class="btn btn-info" onClick="closeWin()">Leave Room</a>&nbsp;<a href="#logCol" class="btn btn-info" data-toggle="collapse" id="logger" style="display: none;">Logs</a>
     	</div>
 					</div>
 			</div>
@@ -493,7 +493,7 @@ window.onbeforeunload = confirmExit;
     <hr>
     <div class="container">
     <div class="col-md-6 col-md-offset-4">
-    	<a href="#logCol" class="btn btn-info" data-toggle="collapse" id="logger" style="display: none;">Logs</a>
+    	
     </div>
     	<br /><br />
     	<div id="logCol" class="collapse">

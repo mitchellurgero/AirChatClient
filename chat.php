@@ -396,6 +396,23 @@ function closeWin() {
 	connection.disconnect();
     windowClose = true;
 }
+function detectmob() { 
+ if( navigator.userAgent.match(/Android/i)
+ || navigator.userAgent.match(/webOS/i)
+ || navigator.userAgent.match(/iPhone/i)
+ || navigator.userAgent.match(/iPad/i)
+ || navigator.userAgent.match(/iPod/i)
+ || navigator.userAgent.match(/BlackBerry/i)
+ || navigator.userAgent.match(/Windows Phone/i)
+ ){
+ 	console.log("true");
+    return true;
+  }
+ else {
+ 	console.log("false");
+    return false;
+  }
+}
 $(document).ready(function () {
 $("#sendMsg").prop( "disabled", true );
     connection = new Strophe.Connection(BOSH_SERVICE);
@@ -407,6 +424,12 @@ $("#sendMsg").prop( "disabled", true );
 	if(DEBUG_MODE == "true"){
 		document.getElementById("logger").style = "";
 	} 
+	var isMob = detectmob();
+	if(isMob == true){
+		document.getElementById("message").style.maxWidth = "90%";
+	} else {
+		document.getElementById("message").style.width = "90%";
+	}
 });
 
 
@@ -448,7 +471,7 @@ window.onbeforeunload = confirmExit;
 					</table>
 					</div>
 				</div>
-                	<div class="panel-footer"><input type="text" id="message" style="width:90%;" onkeyup="handleKeyPress(event);" autocomplete="off">&nbsp;<input type="submit" id="sendMsg" class="btn btn-primary" value="Send" onClick="sendMsg()">
+                	<div class="panel-footer"><input type="text" id="message"  onkeyup="handleKeyPress(event);" autocomplete="off">&nbsp;<input type="submit" id="sendMsg" class="btn btn-primary" value="Send" onClick="sendMsg()">
                 </div>
             </div>
 			</div>

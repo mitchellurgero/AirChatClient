@@ -364,7 +364,7 @@ function head(){
 		connection.connect(usr, pwd, onConnect);	
 	}
 
-	}
+}
     function register(){
     	document.getElementById("errorReg").innerHTML = '<span style="color:DarkBlue">Checking....<span class="glyphicon glyphicon-refresh glyphicon-spin"></span></span>';
     	connection = new Strophe.Connection(BOSH_SERVICE);

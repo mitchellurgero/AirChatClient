@@ -93,7 +93,7 @@ function dsLogin(){
                         <div class="form-group">
                             <label for="username" class="col-sm-3 control-label">Username</label>
                             <div class="col-sm-6">
-                                <input class="form-control" id="usernameReg" name="username" placeholder="Username" required="" type="text">
+                                <input class="form-control" id="usernameReg" name="username" placeholder="Username" required="" type="text" maxlength="12">
                             </div>
                         </div>
                         <div class="form-group">

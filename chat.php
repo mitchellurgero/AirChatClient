@@ -39,16 +39,46 @@ echo'';
     
     <!--Strophe JavaScript functions / Handlers -->
     <script>
+    var window_focus;
+    var inRoom = false;
     var DEBUG_MODE = "<?php echo $DEBUG; ?>";
    	var BOSH_SERVICE = "<?php echo $http_bind; ?>";
 	var connection = null;
 	var crypto = null;
+	var msgSound  = ss_soundbits('notifications/msg.ogg', "notification/msg.mp3");
 	var xmpp_pass = "<?php echo $_POST['password']; ?>";
 	setInterval(function(){ keepAlive(); }, 600000);
 	function log(msg) 
 	{
     	$('#log').append('\n').append(document.createTextNode(msg));
 	}
+    function ss_soundbits(sound){
+            var audiotypes={
+        		"mp3": "audio/mpeg",
+        		"mp4": "audio/mp4",
+        		"ogg": "audio/ogg",
+        		"wav": "audio/wav"
+    		}
+        var audio_element = document.createElement('audio')
+        if (audio_element.canPlayType){
+            for (var i=0; i<arguments.length; i++){
+                var source_element = document.createElement('source')
+                source_element.setAttribute('src', arguments[i])
+                if (arguments[i].match(/\.(\w+)$/i))
+                    source_element.setAttribute('type', audiotypes[RegExp.$1])
+                audio_element.appendChild(source_element)
+            }
+            audio_element.load()
+            audio_element.playclip=function(){
+                audio_element.pause()
+                audio_element.currentTime=0
+                audio_element.play()
+            }
+            return audio_element
+        }
+    }
+
+
 	function keepAlive(){
 		$.ajax({
 			method:'post',
@@ -116,6 +146,8 @@ function onMessage(msg) {
 	//Get Message
 	var res = from.replace("<?php echo $_POST['room']; ?>_room@<?php echo $muc_xmpp; ?>/", "");
 	var res2 = res.toLowerCase();
+	var length = 12;
+	var res = res.substring(0,length);
 	var usrColor = null;
 	var frChar = res2.charAt(0);
 	switch(frChar) {
@@ -235,6 +267,7 @@ function onMessage(msg) {
 	
 	
     if (type == "groupchat" && elems.length > 0) {
+    	var sound_file_url = "notifications/msg.mp3";
 		var body = elems[0];
 		//Now we put the message onto the page
 		var tbl = document.getElementById("chatBody");
@@ -247,6 +280,10 @@ function onMessage(msg) {
 		cell2.innerHTML = Strophe.getText(body);
 		cell2.style.maxWidth = "400px";
 		$("#chatDiv").animate({ scrollTop: $("#chatDiv").prop("scrollHeight") }, 25);
+		if(window_focus != true){
+			msgSound.playclip();
+		}
+		
     }
     return true;
 }
@@ -268,6 +305,8 @@ function onPresence(data){
 		
 		var usr = data.getAttribute("from");
 		var res = usr.replace("<?php echo $_POST['room']; ?>_room@<?php echo $muc_xmpp; ?>/","");
+		var length = 12;
+		var res = res.substring(0,length);
 			res = "<b>" + res + "</b>";
 		var tbl = document.getElementById("usrList2");
 		if(type == 'none'){
@@ -283,6 +322,16 @@ function onPresence(data){
     			//alert(res + " " + cVal);
 	   			if(res == cVal){
 	   				tbl.deleteRow(i);
+	   				var tbl = document.getElementById("chatBody");
+					var row = tbl.insertRow(-1);
+					var cell1 = row.insertCell(0);
+					cell1.innerHTML = '<b><i>System</i></b>';
+					cell1.style.width = "100px";
+					cell1.style.color = "black";
+					var cell2 = row.insertCell(1);
+					cell2.innerHTML = "<i>User "+res+" has left the chat.</i>";
+					cell2.style.maxWidth = "400px";
+	   				
 	   				return true;
    				}
 			}
@@ -290,8 +339,17 @@ function onPresence(data){
 			var row = tbl.insertRow(-1);
 			var cell1 = row.insertCell(0);
 			cell1.innerHTML = res;
+				var tbl = document.getElementById("chatBody");
+				var row = tbl.insertRow(-1);
+				var cell1 = row.insertCell(0);
+				cell1.innerHTML = '<b><i>System</i></b>';
+				cell1.style.width = "100px";
+				cell1.style.color = "black";
+				var cell2 = row.insertCell(1);
+				cell2.innerHTML = "<i>User "+res+" has joined the chat.</i>";
+				cell2.style.maxWidth = "400px";
 		}
-
+		$("#chatDiv").animate({ scrollTop: $("#chatDiv").prop("scrollHeight") }, 25);
 	return true;
 }
 function onRoster(data){
@@ -340,6 +398,15 @@ $("#sendMsg").prop( "disabled", true );
 		document.getElementById("logger").style = "";
 	} 
 });
+
+
+$(window).focus(function() {
+    window_focus = true;
+}).blur(function() {
+    window_focus = false;
+});
+
+
 window.onbeforeunload = confirmExit;
   function confirmExit()
   {
@@ -421,6 +488,7 @@ window.onbeforeunload = confirmExit;
 
   </div>
 </div>
+<div id="sound_element"></div>
   </body>
   </html>
 <?php

@@ -171,11 +171,12 @@ function dsDash(){
 <div class="container">
   <div class="page-header">
     <center><h3>Create a room to begin chatting with friends!</h3></center>
+    <center><small>Welcome, <?php echo $_SESSION['username'] ?>!</small></center>
   </div>
     <div class="row">
     	<div class="col-md-4 col-md-offset-2">
     		<div class="panel panel-default">
-                <div class="panel-heading"> <strong class="">Contact List:(Work in Progress!)</strong>
+                <div class="panel-heading"> <strong class="">Contact List:</strong>
                 </div>
                 <div class="panel-body">
                 	<div id="rosterDiv" style="overflow-y: auto; width:100%; height:180px;">
@@ -294,23 +295,21 @@ function head(){
     var BOSH_SERVICE = "<?php echo $http_bind; ?>";
 	var connection = null;
 	var isDash = "<?php echo $_SESSION['dash'];?>";
-	function onRoster(data){
-		//console.log(data);
-		connection.roster.requestRoster(function(roster){
-   			var items = roster.getItems();
-   			for( var i = 0; i < items.length; i++ ){
-      			var item = items[i];
-      			var res = Strophe.getText(item);
-				var tbl = document.getElementById("rosterList");
-				var row = tbl.insertRow(-1);
-				var cell1 = row.insertCell(0);
-				cell1.innerHTML = '<b>'+res+'</b>';
-				cell1.style.width = "100px";
-				cell1.style.color = "black";
-   			}
-		});
-		
-		
+	function onRoster(iq){
+			//alert(iq);
+			$(iq).find('item').each(function () { //all contacts 
+                    	var jid = $(this).attr('jid');
+                    	var name = $(this).attr('name') || jid;
+                    	var subscr = $(this).attr('subscription'); //type subscription
+                    	console.log('contacts: jid:' + jid + '  Name:' + name);
+                    	var newJid = jid.split("@");
+						var tbl = document.getElementById("rosterList");
+						var row = tbl.insertRow(-1);
+						var cell1 = row.insertCell(0);
+						cell1.innerHTML = '<b><a href="priv.php?usr='+newJid[0]+'">'+newJid[0]+'</a></b>';
+						cell1.style.width = "100px";
+						cell1.style.color = "black";
+            });
 	}
 	function onPresence(data){
 		
@@ -365,6 +364,7 @@ function head(){
 	{
     	//alert(data);
     	//Check for errors:
+    	console.log(data);
     	var error = data.indexOf("bad-auth");
     	if(error != -1){
     		document.getElementById("error").innerHTML = '<span style="color:red">Invalid username or password!</span>';
@@ -446,7 +446,6 @@ function head(){
 			connection.addHandler(onMessage, null, 'message', 'groupchat'); 
 			connection.addHandler(onPresence, null, 'presence');
 			connection.addHandler(onRoster, "jabber:iq:roster", "iq", "set");
-			//connection.roster.get(onRoster, 0);
 			
 			
 			

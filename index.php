@@ -306,7 +306,7 @@ function head(){
 						var tbl = document.getElementById("rosterList");
 						var row = tbl.insertRow(-1);
 						var cell1 = row.insertCell(0);
-						cell1.innerHTML = '<b><a href="priv.php?usr='+newJid[0]+'">'+newJid[0]+'</a></b>';
+						cell1.innerHTML = '<b><a href="priv.php?usr='+newJid[0]+'" target="_blank">'+newJid[0]+'</a></b>';
 						cell1.style.width = "100px";
 						cell1.style.color = "black";
             });
@@ -315,7 +315,23 @@ function head(){
 		
 	}
 	function onMessage(data){
-		
+	alert(Strophe.getString(data));
+		var to = msg.getAttribute('to');
+    	var from = msg.getAttribute('from');
+    	var type = msg.getAttribute('type');
+    	var elems = msg.getElementsByTagName('body');
+    	//alert(name);
+    	//alert(to + from + type + ;
+		//Get Message
+		var res = from.replace("@<?php echo $fqdn_xmpp; ?>", "");
+		res = res.split("/");
+		res = res[0];
+		var res2 = res.toLowerCase();
+		if (type == "chat" && elems.length > 0) {
+			var body = elems[0];
+			window.open('priv.php?usr='+res2+'&msg='+body+'','_blank');
+	    }
+    return true;
 	}
    	function onConnect(status)
 	{
@@ -443,7 +459,7 @@ function head(){
     		connection.send($pres());
     		var iq = $iq({type: 'get'}).c('query', {xmlns: 'jabber:iq:roster'});
 			connection.sendIQ(iq, onRoster);
-			connection.addHandler(onMessage, null, 'message', 'groupchat'); 
+			connection.addHandler(onMessage, null, 'message', 'chat'); 
 			connection.addHandler(onPresence, null, 'presence');
 			connection.addHandler(onRoster, "jabber:iq:roster", "iq", "set");
 			

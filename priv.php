@@ -7,7 +7,7 @@ if(!isset($_SESSION['username']) || !isset($_SESSION['ps'])){
 	header("Location: ./");
 	die();
 }
-
+//
 
 $_POST['room'] = strtolower($_POST['room']);
 echo'';

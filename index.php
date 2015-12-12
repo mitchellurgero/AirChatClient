@@ -77,6 +77,7 @@ function dsLogin(){
 	<div class="row">
     	<div class="col-md-4 col-md-offset-4">
     	<center>Coded with &hearts;</center>
+    	<center>Powered By <a href="https://github.com/mitchellurgero/AirChatClient" target="_blank">AirChat</a></center>
     	</div>
     </div>
 </div><br /><br />
@@ -174,21 +175,8 @@ function dsDash(){
     <center><small>Welcome, <?php echo $_SESSION['username'] ?>!</small></center>
   </div>
     <div class="row">
-    	<div class="col-md-4 col-md-offset-2">
-    		<div class="panel panel-default">
-                <div class="panel-heading"> <strong class="">Contact List:</strong>
-                </div>
-                <div class="panel-body">
-                	<div id="rosterDiv" style="overflow-y: auto; width:100%; height:180px;">
-                    <table id="rosterList" class="table table-striped table-bordered table-hover" style="width:100%; max-height:100%;">
-                   	</table>
-                   	</div>
-                    
-                </div>
-                <div class="panel-footer"><a href="logout.php">Logout</a></div>
-                </div>
-    	</div>
-        <div class="col-md-4">
+    	
+        <div class="col-md-4 col-md-offset-4">
             <div class="panel panel-default">
                 <div class="panel-heading"> <strong class="">Create a room:</strong>
 
@@ -222,7 +210,7 @@ function dsDash(){
                     </form>
                     
                 </div>
-                <div class="panel-footer">&nbsp;</div>
+                <div class="panel-footer"><a href="logout.php">Logout</a></div>
                 </div>
             </div>
         </div>
@@ -250,6 +238,7 @@ $('#room').bind('keypress', function (event) {
 	<div class="row">
     	<div class="col-md-4 col-md-offset-4">
     	<center>Coded with &hearts;</center>
+    	<center>Powered By <a href="https://github.com/mitchellurgero/AirChatClient" target="_blank">AirChat</a></center>
     	</div>
     </div>
 </div><br /><br />
@@ -277,15 +266,23 @@ function head(){
 
     <title><?php echo $html_title; ?></title>
     <script src='js/jquery1.11.3.js'></script>
+    <script src="js/jquery-ui.js"></script>
     <script src='strophejs/strophe.js'></script>
     <script src='strophejs/strophe.register.js'></script>
     <script src='strophejs/strophe.roster.js'></script>
     <script src="js/bootstrap.js"></script>
+    <script src="jsxc/lib/jquery.colorbox-min.js"></script>
+   <script src="jsxc/lib/jquery.slimscroll.js"></script>
+   <script src="jsxc/lib/jquery.fullscreen.js"></script>
+    <script src="jsxc/lib/jsxc.dep.js"></script>
+    <script src="jsxc/jsxc.min.js"></script>
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-
+	
     <!-- Custom styles for this template -->
     <link href="css/signin.css" rel="stylesheet">
+    <link href="jsxc/css/jsxc.css" media="all" rel="stylesheet" type="text/css" />
+   	<link href="jsxc/css/jsxc.webrtc.css" media="all" rel="stylesheet" type="text/css" />
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -295,43 +292,11 @@ function head(){
     var BOSH_SERVICE = "<?php echo $http_bind; ?>";
 	var connection = null;
 	var isDash = "<?php echo $_SESSION['dash'];?>";
-	function onRoster(iq){
-			//alert(iq);
-			$(iq).find('item').each(function () { //all contacts 
-                    	var jid = $(this).attr('jid');
-                    	var name = $(this).attr('name') || jid;
-                    	var subscr = $(this).attr('subscription'); //type subscription
-                    	console.log('contacts: jid:' + jid + '  Name:' + name);
-                    	var newJid = jid.split("@");
-						var tbl = document.getElementById("rosterList");
-						var row = tbl.insertRow(-1);
-						var cell1 = row.insertCell(0);
-						cell1.innerHTML = '<b><a href="priv.php?usr='+newJid[0]+'" target="_blank">'+newJid[0]+'</a></b>';
-						cell1.style.width = "100px";
-						cell1.style.color = "black";
-            });
+	function rawInput(data){
+		console.log(data);
 	}
-	function onPresence(data){
-		
-	}
-	function onMessage(data){
-	alert(Strophe.getString(data));
-		var to = msg.getAttribute('to');
-    	var from = msg.getAttribute('from');
-    	var type = msg.getAttribute('type');
-    	var elems = msg.getElementsByTagName('body');
-    	//alert(name);
-    	//alert(to + from + type + ;
-		//Get Message
-		var res = from.replace("@<?php echo $fqdn_xmpp; ?>", "");
-		res = res.split("/");
-		res = res[0];
-		var res2 = res.toLowerCase();
-		if (type == "chat" && elems.length > 0) {
-			var body = elems[0];
-			window.open('priv.php?usr='+res2+'&msg='+body+'','_blank');
-	    }
-    return true;
+	function rawOutput(data){
+		console.log(data);
 	}
    	function onConnect(status)
 	{
@@ -375,24 +340,6 @@ function head(){
 	function clearTextTime(){
 		document.getElementById("room").value="";
 		document.getElementById("password").value="";
-	}
-	function rawInput(data)
-	{
-    	//alert(data);
-    	//Check for errors:
-    	console.log(data);
-    	var error = data.indexOf("bad-auth");
-    	if(error != -1){
-    		document.getElementById("error").innerHTML = '<span style="color:red">Invalid username or password!</span>';
-			$("#username").prop( "disabled", false );
-			$("#password").prop( "disabled", false );
-			$("#submitBtn").prop( "disabled", false );
-			$("#reset").prop( "disabled", false );
-			
-    	}
-	}
-	function rawOutput(){
-		
 	}
 	function login(){
 	if(document.getElementById("username").value == "" || document.getElementById("password").value == ""){
@@ -445,39 +392,32 @@ function head(){
 			
     	}
     }
-	function onConnectDash(status)
-	{
-    	if (status == Strophe.Status.CONNECTING) {
-    	
-    	} else if (status == Strophe.Status.CONNFAIL) {
-    	
-    	} else if (status == Strophe.Status.DISCONNECTING) {
-    	
-    	} else if (status == Strophe.Status.DISCONNECTED) {
 
-    	} else if (status == Strophe.Status.CONNECTED) {
-    		connection.send($pres());
-    		var iq = $iq({type: 'get'}).c('query', {xmlns: 'jabber:iq:roster'});
-			connection.sendIQ(iq, onRoster);
-			connection.addHandler(onMessage, null, 'message', 'chat'); 
-			connection.addHandler(onPresence, null, 'presence');
-			connection.addHandler(onRoster, "jabber:iq:roster", "iq", "set");
-			
-			
-			
-    	}
-	}
 $(document).ready(function () {
-	if(isDash == "true"){
-		connection = new Strophe.Connection(BOSH_SERVICE);
-    	var usr = "<?php echo $_SESSION['username']."@".$fqdn_xmpp;?>";
-    	var pwd = "<?php echo $_SESSION['ps'];?>";
-    	connection.rawInput = rawInput;
-    	connection.rawOutput = rawOutput;
-		connection.connect(usr, pwd, onConnectDash);
-	}
+if(isDash == "true"){
+	 jsxc.init({
+      root: 'jsxc',
+      xmpp: {
+         url: BOSH_SERVICE,
+         domain: "<?php echo $fqdn_xmpp ?>",
+         resource: 'AirChat'
+      }
+   });
+   var jid = "<?php echo $_SESSION['username'] ?>@<?php echo $fqdn_xmpp ?>";
+   var password = "<?php echo $_SESSION['ps'] ?>";
+   jsxc.xmpp.login(jid , password);
 
+
+
+}
 });
+window.onbeforeunload = confirmExit;
+  function confirmExit()
+  {
+    connection.disconnect();
+    jsxc.xmpp.disconnect();
+    //return "You have attempted to leave this page.  If you have made any changes to the fields without clicking the Save button, your changes will be lost.  Are you sure you want to exit this page?";
+  }
     </script>
   </head>
 	<?php
@@ -486,16 +426,6 @@ $(document).ready(function () {
 function foot(){
 	echo '';
 	?>
-	<br />
-	<br />
- <nav class="navbar navbar-inverse navbar-fixed-bottom">
-  <div class="container-fluid">
-    <div>
-    <br />
-    <center style="color:white">Powered By <a href="https://github.com/mitchellurgero/AirChatClient" target="_blank">AirChat</a></center>
-    </div>
-  </div>
-</nav>
 </html>
 	
 	<?php

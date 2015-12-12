@@ -9,6 +9,7 @@ The client supports TLS connections and Group Chats only.
 
 - Bootstrap3
 - StropheJS
+- JSXC (https://jsxc.org)
 - AES.js (B. Poettering)
 
 # Features

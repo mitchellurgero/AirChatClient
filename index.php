@@ -177,7 +177,7 @@ function dsDash(){
 	global $html_title, $html_desc;
 	echo '';
 	?>
-  <body>
+  <body onLoad="getRoomList()">
 
 <div class="container">
   <div class="page-header">
@@ -185,8 +185,20 @@ function dsDash(){
     <center><small>Welcome, <?php echo $_SESSION['username'] ?>!</small></center>
   </div>
     <div class="row">
-    	
-        <div class="col-md-4 col-md-offset-4">
+    	<div class="col-md-4 col-md-offset-2">
+    	<div class="panel panel-default" style="max-height: 295px;">
+            <div class="panel-heading"> <strong class="">Current open Rooms:</strong></div>
+                <div class="panel-body">
+                	<div id="listRooms">
+    					No rooms are open right now.
+    				</div>
+                </div>
+        <div class="panel-footer">&nbsp;</div>
+        </div>     
+                
+    		
+    	</div>
+        <div class="col-md-4">
             <div class="panel panel-default">
                 <div class="panel-heading"> <strong class="">Create a room:</strong>
 
@@ -260,7 +272,7 @@ $('#room').bind('keypress', function (event) {
 }
 //Have the same header in both functions
 function head(){
-	global $http_bind, $fqdn_xmpp, $html_title;
+	global $http_bind, $fqdn_xmpp, $html_title, $muc_xmpp;
 	echo '';
 	?>
 <!DOCTYPE html>
@@ -320,8 +332,13 @@ function head(){
 			$("#reset").prop( "disabled", false );
     	} else if (status == Strophe.Status.DISCONNECTING) {
 			
-    	} else if (status == Strophe.Status.DISCONNECTED) {
-			
+    	} else if (status == Strophe.Status.AUTHFAIL) {
+			document.getElementById("error").innerHTML = '<span style="color:red">Incorrect username or password!</span>';
+			$("#username").prop( "disabled", false );
+			$("#password").prop( "disabled", false );
+			$("#submitBtn").prop( "disabled", false );
+			$("#reset").prop( "disabled", false );
+			$("#password").prop("value","");
     	} else if (status == Strophe.Status.CONNECTED) {
 			document.getElementById("error").innerHTML = '<span style="color:green">Connected!</span>';
 			$.ajax({
@@ -366,7 +383,34 @@ function head(){
 		connection.connect(usr, pwd, onConnect);	
 	}
 
-}
+	}
+	
+	function getRoomList(){
+		connection = new Strophe.Connection(BOSH_SERVICE);
+		connection.rawInput = rawInput;
+		connection.rawOutput = rawOutput;
+		var usr = "<?php echo $_SESSION['username']; ?>";
+		var pwd = "<?php echo $_SESSION['ps']; ?>";
+		connection.connect(usr, pwd, onRoomList);
+	}
+	function onRoomList(status){
+		if (status == Strophe.Status.CONNECTED) {
+			connection.muc.listRooms("<?php echo $muc_xmpp; ?>",onRoomCb, onRoomError);
+		} else if(status == Strophe.Status.AUTHFAIL) {
+			
+			
+		} else if(status == Strophe.Status.CONNFAIL){
+			
+		}
+	}
+	function onRoomError(data){
+		alert(data);
+	}
+	function onRoomCb(data){
+		alert(data);	
+		
+	}
+	
     function register(){
     	document.getElementById("errorReg").innerHTML = '<span style="color:DarkBlue">Checking....<span class="glyphicon glyphicon-refresh glyphicon-spin"></span></span>';
     	connection = new Strophe.Connection(BOSH_SERVICE);
@@ -425,7 +469,7 @@ window.onbeforeunload = confirmExit;
   function confirmExit()
   {
     connection.disconnect();
-    jsxc.xmpp.logout();
+    //jsxc.xmpp.logout();
     
   }
     </script>

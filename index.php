@@ -2,6 +2,16 @@
 session_start();
 //Check for POST (Login Attempt)
 require("config.php");
+
+//Check is Force_SSL = true
+if($FORCE_SSL == "true"){
+	if($_SERVER["HTTPS"] != "on")
+	{
+    	header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+    	exit();
+	}
+}
+
 if(isset($_POST['username']) && isset($_POST['password'])){
 	//Log them in against prosody database here. (Or maybe a flat file? who knows yet.)
 }
@@ -274,15 +284,15 @@ function head(){
     <script src="jsxc/lib/jquery.colorbox-min.js"></script>
    <script src="jsxc/lib/jquery.slimscroll.js"></script>
    <script src="jsxc/lib/jquery.fullscreen.js"></script>
-    <script src="jsxc/lib/jsxc.dep.js"></script>
-    <script src="jsxc/jsxc.min.js"></script>
+    <!-- <script src="jsxc/lib/jsxc.dep.js"></script>
+    <script src="jsxc/jsxc.min.js"></script> -->
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 	
     <!-- Custom styles for this template -->
     <link href="css/signin.css" rel="stylesheet">
-    <link href="jsxc/css/jsxc.css" media="all" rel="stylesheet" type="text/css" />
-   	<link href="jsxc/css/jsxc.webrtc.css" media="all" rel="stylesheet" type="text/css" />
+   <!--  <link href="jsxc/css/jsxc.css" media="all" rel="stylesheet" type="text/css" />
+   	<link href="jsxc/css/jsxc.webrtc.css" media="all" rel="stylesheet" type="text/css" /> -->
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -394,7 +404,7 @@ function head(){
     }
 
 $(document).ready(function () {
-if(isDash == "true"){
+if(isDash == "no_connect"){
 	 jsxc.init({
       root: 'jsxc',
       xmpp: {

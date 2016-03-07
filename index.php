@@ -214,7 +214,7 @@ function dsDash(){
                         <div class="form-group">
                             <label for="password" class="col-sm-3 control-label">Password:</label>
                             <div class="col-sm-9">
-                                <input class="form-control" id="password" name="password" placeholder="Password" required="" type="password">
+                               <!-- <input class="form-control" id="password" name="password" placeholder="Password" required="" type="password"> --> <small>Passwords not currently supported at this time.</small>
                             </div>
                         </div>
                         <div class="form-group last">

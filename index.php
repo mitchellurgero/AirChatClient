@@ -391,23 +391,29 @@ function head(){
 		var usr = "<?php echo $_SESSION['username']; ?>";
 		var pwd = "<?php echo $_SESSION['ps']; ?>";
 		connection.connect(usr, pwd, onRoomList);
+		console.log("End Get Room List...");
 	}
 	function onRoomList(status){
+		console.log("Get room list...");
 		if (status == Strophe.Status.CONNECTED) {
 			connection.muc.listRooms("<?php echo $muc_xmpp; ?>",onRoomCb, onRoomError);
-		} else if(status == Strophe.Status.AUTHFAIL) {
 			
+		} else if(status == Strophe.Status.AUTHFAIL) {
+			alert(status);
 			
 		} else if(status == Strophe.Status.CONNFAIL){
-			
+			alert(status);
 		}
 	}
 	function onRoomError(data){
-		alert(data);
+		console.log("Room List error: " + data);
 	}
-	function onRoomCb(data){
-		alert(data);	
-		
+	function onRoomCb(rooms){
+		if(rooms.length == 0){
+			console.log("No rooms!");
+		} else if(rooms.length > 0) {
+			console.log("Data: " + rooms.serializeArray());
+		}
 	}
 	
     function register(){
@@ -447,22 +453,8 @@ function head(){
     }
 
 $(document).ready(function () {
-if(isDash == "no_connect"){
-	 jsxc.init({
-      root: 'jsxc',
-      xmpp: {
-         url: BOSH_SERVICE,
-         domain: "<?php echo $fqdn_xmpp ?>",
-         resource: 'AirChat'
-      }
-   });
-   var jid = "<?php echo $_SESSION['username'] ?>@<?php echo $fqdn_xmpp ?>";
-   var password = "<?php echo $_SESSION['ps'] ?>";
-   jsxc.xmpp.login(jid , password);
-
-
-
-}
+	//Do stuff?
+	
 });
 window.onbeforeunload = confirmExit;
   function confirmExit()

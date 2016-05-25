@@ -283,7 +283,7 @@ function onMessage(msg) {
 		cell1.style.width = "100px";
 		cell1.style.color = usrColor;
 		var cell2 = row.insertCell(1);
-		cell2.innerHTML = Strophe.getText(body);
+		cell2.innerHTML = chunkString(Strophe.getText(body), 75);
 		cell2.style.maxWidth = "400px";
 		$("#chatDiv").animate({ scrollTop: $("#chatDiv").prop("scrollHeight") }, 25);
 		if(window_focus != true){
@@ -292,6 +292,21 @@ function onMessage(msg) {
 		
     }
     return true;
+}
+function chunkString(str, length) {
+	var bodyNew = '';
+	var bodySplit;
+	if(str.length > 75){
+		bodySplit = str.match(new RegExp('.{1,' + length + '}', 'g'));
+  		for(i = 0; i < bodySplit.length; i++){
+	  		bodyNew += bodySplit[i] + "<br />";
+	  	}
+	} else {
+		bodyNew = str;
+	}
+
+  	
+  	return bodyNew;
 }
 function onkey(){
 	
@@ -464,8 +479,8 @@ window.onbeforeunload = confirmExit;
                 <div class="panel-heading"> <strong class="">Messages: </strong><small id="conStatus">Connecting...</small>
 
                 </div>
-                <div class="panel-body" style="height:300px;">
-					<div id="chatDiv" style="overflow-y: auto; width:100%; max-height:300px;">
+                <div class="panel-body" style="height:400px;">
+					<div id="chatDiv" style="overflow-y: auto; width:100%; max-height:400px;">
 					<table id="chatBody" class="table table-striped table-bordered table-hover" style="width:100%; height:100%;">
 
 					</table>
@@ -479,7 +494,7 @@ window.onbeforeunload = confirmExit;
 				<div id="usrList">
 					<div class="panel panel-default">
                 		<div class="panel-heading"> <strong class="">Current Users:</strong></div>
-						<div class="panel-body" style="height:300px; overflow-y: auto; width:100%;">
+						<div class="panel-body" style="height:400px; overflow-y: auto; width:100%;">
 							<table id="usrList2" class="table table-striped table-bordered table-hover">
 							
 							</table>

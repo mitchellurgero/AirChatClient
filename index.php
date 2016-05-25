@@ -28,7 +28,7 @@ foot();
 
 //Function to show the login page.
 function dsLogin(){
-	global $html_title, $html_desc;
+	global $html_title, $html_desc,$html_desc2;
 	echo '';
 	?>
   <body>
@@ -41,8 +41,7 @@ function dsLogin(){
     	<div class="col-md-4 col-md-offset-2">
     		<br /><br /><br />
     		<p>
-    		XMPP based chat client for all.<br />
-    		Login to chat with your friends!
+    		<?php echo $html_desc2; ?>
     		</p>
     	</div>
         <div class="col-md-4">

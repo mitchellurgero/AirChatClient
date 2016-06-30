@@ -39,7 +39,6 @@ function dsLogin(){
   </div>
     <div class="row">
     	<div class="col-md-4 col-md-offset-2">
-    		<br /><br /><br />
     		<p>
     		<?php echo $html_desc2; ?>
     		</p>

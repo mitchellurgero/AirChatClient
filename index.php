@@ -179,16 +179,16 @@ function dsDash(){
 
 <div class="container">
   <div class="page-header">
-    <center><h3>Create a room to begin chatting with friends!</h3></center>
+    <center><h3>Create a room to begin chatting with friends!</h3><small>(Works better with Chrome/Firefox!)</small></center>
     <center><small>Welcome, <?php echo $_SESSION['username'] ?>!</small></center>
   </div>
     <div class="row">
-    	<div class="col-md-6 col-md-offset-3" hidden>
+    	<div class="col-md-6">
     	<div class="panel panel-default" style="max-height: 295px;">
             <div class="panel-heading"> <strong class="">Current open Rooms:</strong></div>
                 <div class="panel-body">
                 	<div id="listRooms">
-    					No rooms are open right now.
+    					Getting Room List, Please wait...
     				</div>
                 </div>
         <div class="panel-footer">&nbsp;</div>
@@ -196,7 +196,7 @@ function dsDash(){
                 
     		
     	</div>
-        <div class="col-md-6 col-md-offset-3">
+        <div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading"> <strong class="">Create a room:</strong>
 
@@ -217,7 +217,7 @@ function dsDash(){
                         </div>
                         <div class="form-group last">
                             <div class="col-sm-offset-3 col-sm-9">
-                                <button type="submit" class="btn btn-success btn-sm pull-right">Create Room</button>
+                                <button type="submit" class="btn btn-success btn-sm pull-right" id="form_btn" name="form_btn">Create Room</button>
                             </div>
                         </div>
                         <div class="form-group last">
@@ -289,6 +289,7 @@ function head(){
     <script src="js/jquery-ui.js"></script>
     <script src='strophejs/strophe.js'></script>
     <script src='strophejs/strophe.register.js'></script>
+    <script src='strophejs/strophe.muc.js'></script>
     <script src='strophejs/strophe.roster.js'></script>
     <script src="js/bootstrap.js"></script>
     <script src="jsxc/lib/jquery.colorbox-min.js"></script>
@@ -313,10 +314,10 @@ function head(){
 	var connection = null;
 	var isDash = "<?php echo $_SESSION['dash'];?>";
 	function rawInput(data){
-		console.log(data);
+		console.log("INPUT -- " + data);
 	}
 	function rawOutput(data){
-		console.log(data);
+		console.log("OUTPUT -- " + data);
 	}
    	function onConnect(status)
 	{
@@ -387,7 +388,7 @@ function head(){
 		connection = new Strophe.Connection(BOSH_SERVICE);
 		connection.rawInput = rawInput;
 		connection.rawOutput = rawOutput;
-		var usr = "<?php echo $_SESSION['username']; ?>";
+		var usr = "<?php echo $_SESSION['username']; ?>"  + "@<?php echo $fqdn_xmpp;?>";
 		var pwd = "<?php echo $_SESSION['ps']; ?>";
 		connection.connect(usr, pwd, onRoomList);
 		console.log("End Get Room List...");
@@ -395,26 +396,41 @@ function head(){
 	function onRoomList(status){
 		console.log("Get room list...");
 		if (status == Strophe.Status.CONNECTED) {
-			connection.muc.listRooms("<?php echo $muc_xmpp; ?>",onRoomCb, onRoomError);
+			console.log("CONNECTED!");
+			connection.muc.listRooms("<?php echo $muc_xmpp; ?>", onRoomCb1, onRoomError);
 			
 		} else if(status == Strophe.Status.AUTHFAIL) {
-			alert(status);
+			console.log(status);
 			
 		} else if(status == Strophe.Status.CONNFAIL){
-			alert(status);
+			console.log(status);
 		}
 	}
 	function onRoomError(data){
 		console.log("Room List error: " + data);
 	}
-	function onRoomCb(rooms){
-		if(rooms.length == 0){
-			console.log("No rooms!");
-		} else if(rooms.length > 0) {
-			console.log("Data: " + rooms.serializeArray());
+	function onRoomCb1(rooms){
+		console.log("onROOM!");
+		var roomTable = "";
+    	rooms1 = xmlToJson(rooms);
+    	roomTable = '<table class="table">';
+    	console.log(JSON.stringify(rooms1));
+		for (i = 0; i < rooms1.query.item.length; i++) {
+			var item = rooms1.query.item[i];
+			var name = item["@attributes"].jid;
+			var name1 = name.split("@");
+			var name2 = name1[0].split("_room");
+			roomTable = roomTable + "\n" + '<tr><td><a href="#" onClick="gotoRoom(\'' + name2[0] + '\')">' + name2[0] + '</a></td></tr>';
+			
 		}
+		roomTable = roomTable + "\n" + '</table>';
+		document.getElementById("listRooms").innerHTML = roomTable;
+
 	}
-	
+	function gotoRoom(room_name){
+		document.getElementById("room").value = room_name;
+		document.getElementById("form_btn").click();
+	}
     function register(){
     	document.getElementById("errorReg").innerHTML = '<span style="color:DarkBlue">Checking....<span class="glyphicon glyphicon-refresh glyphicon-spin"></span></span>';
     	connection = new Strophe.Connection(BOSH_SERVICE);
@@ -462,6 +478,43 @@ window.onbeforeunload = confirmExit;
     //jsxc.xmpp.logout();
     
   }
+function xmlToJson(xml) {
+	
+	// Create the return object
+	var obj = {};
+
+	if (xml.nodeType == 1) { // element
+		// do attributes
+		if (xml.attributes.length > 0) {
+		obj["@attributes"] = {};
+			for (var j = 0; j < xml.attributes.length; j++) {
+				var attribute = xml.attributes.item(j);
+				obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
+			}
+		}
+	} else if (xml.nodeType == 3) { // text
+		obj = xml.nodeValue;
+	}
+
+	// do children
+	if (xml.hasChildNodes()) {
+		for(var i = 0; i < xml.childNodes.length; i++) {
+			var item = xml.childNodes.item(i);
+			var nodeName = item.nodeName;
+			if (typeof(obj[nodeName]) == "undefined") {
+				obj[nodeName] = xmlToJson(item);
+			} else {
+				if (typeof(obj[nodeName].push) == "undefined") {
+					var old = obj[nodeName];
+					obj[nodeName] = [];
+					obj[nodeName].push(old);
+				}
+				obj[nodeName].push(xmlToJson(item));
+			}
+		}
+	}
+	return obj;
+}
     </script>
   </head>
 	<?php

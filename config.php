@@ -9,10 +9,10 @@ $xmpp_port = "5222"; //The port of the XMPP server (Usually 5222)(Or 5223 for Le
 $muc_xmpp = "conference.airchat.urgero.org"; //MUC service URL, configured on server, does not usually need to be in DNS.
 $html_title = "AirChat"; //Title of the login and dashboard
 $html_desc = 'Online group chat with family and friends!'; //Description or slogan for login page.
-$html_desc2 = '<div class="text-center">Join us on <a href="mumble://airchat.urgero.org:64738/">Mumble!</a><br /><br />
+$html_desc2 = '<div class="text-center"><!--Join us on <a href="mumble://airchat.urgero.org:64738/">Mumble!</a><br /><br />
 Mumble Settings:<br />
 <b>Server:</b> airchat.urgero.org<br />
-<b>Port:</b> 64738<br /><br />
+<b>Port:</b> 64738<br /><br />-->
 Join us on <a href="xmpp://airchat.urgero.org">XMPP!</a><br /><br />
 XMPP Settings(External Only):<br />
 <b>Server:</b> airchat.urgero.org<br />

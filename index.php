@@ -176,7 +176,7 @@ function dsDash(){
 	echo '';
 	?>
   <body onLoad="getRoomList()">
-
+	
 <div class="container">
   <div class="page-header">
     <center><h3>Create a room to begin chatting with friends!</h3><small>(Works better with Chrome/Firefox!)</small></center>
@@ -184,10 +184,10 @@ function dsDash(){
   </div>
     <div class="row">
     	<div class="col-md-6">
-    	<div class="panel panel-default" style="max-height: 295px;">
+    	<div class="panel panel-default" style="max-height: 600px;">
             <div class="panel-heading"> <strong class="">Current open Rooms:</strong></div>
                 <div class="panel-body">
-                	<div id="listRooms">
+                	<div id="listRooms" style="max-height: 595px;">
     					Getting Room List, Please wait...
     				</div>
                 </div>
@@ -287,18 +287,16 @@ function head(){
     <title><?php echo $html_title; ?></title>
     <script src='js/jquery1.11.3.js'></script>
     <script src="js/jquery-ui.js"></script>
+    <script src="js/jquery.dataTables.min.js"></script>
     <script src='strophejs/strophe.js'></script>
     <script src='strophejs/strophe.register.js'></script>
     <script src='strophejs/strophe.muc.js'></script>
     <script src='strophejs/strophe.roster.js'></script>
     <script src="js/bootstrap.js"></script>
-    <script src="jsxc/lib/jquery.colorbox-min.js"></script>
-   <script src="jsxc/lib/jquery.slimscroll.js"></script>
-   <script src="jsxc/lib/jquery.fullscreen.js"></script>
-    <!-- <script src="jsxc/lib/jsxc.dep.js"></script>
-    <script src="jsxc/jsxc.min.js"></script> -->
+	<script src="js/dataTables.bootstrap.min.js"></script>
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/dataTables.bootstrap.min.css">
 	
     <!-- Custom styles for this template -->
     <link href="css/signin.css" rel="stylesheet">
@@ -368,19 +366,19 @@ function head(){
 		document.getElementById("password").value="";
 	}
 	function login(){
-	if(document.getElementById("username").value == "" || document.getElementById("password").value == ""){
-		
-	} else {
-		$("#username").prop( "disabled", true );
-		$("#password").prop( "disabled", true );
-		$("#submitBtn").prop( "disabled", true );
-		$("#reset").prop( "disabled", true );
-		connection = new Strophe.Connection(BOSH_SERVICE);
-		connection.rawInput = rawInput;
-    	var usr = document.getElementById("username").value + "@<?php echo $fqdn_xmpp;?>";
-    	var pwd = document.getElementById("password").value
-		connection.connect(usr, pwd, onConnect);	
-	}
+		if(document.getElementById("username").value == "" || document.getElementById("password").value == ""){
+			
+		} else {
+			$("#username").prop( "disabled", true );
+			$("#password").prop( "disabled", true );
+			$("#submitBtn").prop( "disabled", true );
+			$("#reset").prop( "disabled", true );
+			connection = new Strophe.Connection(BOSH_SERVICE);
+			connection.rawInput = rawInput;
+    		var usr = document.getElementById("username").value + "@<?php echo $fqdn_xmpp;?>";
+    		var pwd = document.getElementById("password").value
+			connection.connect(usr, pwd, onConnect);	
+		}
 
 	}
 	
@@ -413,7 +411,17 @@ function head(){
 		console.log("onROOM!");
 		var roomTable = "";
     	rooms1 = xmlToJson(rooms);
-    	roomTable = '<table class="table">';
+    	roomTable = '<table class="table" id="dataTable1">';
+    	roomTable += '<thead>';
+		roomTable += '<tr>';
+		roomTable += '<th>Room Name</th>';
+		roomTable += '</tr>';
+		roomTable += '</thead>';
+		roomTable += '<tfoot>';
+		roomTable += '<tr>';
+		roomTable += '<th>Room Name</th>';
+		roomTable += '</tr>';
+		roomTable += '</tfoot>';
     	console.log(JSON.stringify(rooms1));
 		for (i = 0; i < rooms1.query.item.length; i++) {
 			var item = rooms1.query.item[i];
@@ -425,6 +433,7 @@ function head(){
 		}
 		roomTable = roomTable + "\n" + '</table>';
 		document.getElementById("listRooms").innerHTML = roomTable;
+		$('#dataTable1').DataTable();
 
 	}
 	function gotoRoom(room_name){

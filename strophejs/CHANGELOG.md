@@ -1,5 +1,61 @@
 # Strophe.js Change Log
 
+## Version 1.2.12 - 2017-01-15
+
+* Reduce the priority of the SASL-EXTERNAL auth mechanism. OpenFire 4.1.1
+  advertises support for SASL-EXTERNAL and the vast majority of Strophe.js
+  installs are not set up to support SASL-EXTERNAl, causing them to fail
+  logging users in.
+
+## Version 1.2.11 - 2016-12-13
+* 189 Strophe never reaches DISCONNECTED status after .connect(..) and
+  .disconnect(..) calls while offline.
+* Add `sendPresence` method, similar to `sendIQ`, i.e. for cases where you expect a
+  responding presence (e.g. when leaving a MUC room).
+
+## Version 1.2.10 - 2016-11-30
+* #172 and #215: Strophe shouldn't require `from` attribute in iq response
+* #216 Get inactivity attribute from session creation response
+* Enable session restoration for anonymous logins
+
+## Version 1.2.9 - 2016-10-24
+* Allow SASL mechanisms to be supported to be passed in as option to `Strophe.Connection` constructor.
+* Add new matching option to `Strophe.Handler`, namely `ignoreNamespaceFragment`.
+* The `matchBare` matching option for `Strophe.Handler` has been renamed to
+  `matchBareFromJid`. The old name will still work in this release but is
+  deprecated and will be removed in a future release.
+* #114 Add an error handler for HTTP calls
+* #213 "XHR open failed." in BOSH in IE9
+* #214 Add function to move Strophe.Builder pointer back to the root node
+* #172, #215 Don't compare `to` and `to` values of sent and received IQ stanzas
+  to determine correctness (we rely on UUIDs for that).
+
+## Version 1.2.8 - 2016-09-16
+* #200 Fix for webpack
+* #203 Allow custom Content-Type header for requests
+* #206 XML stanza attributes: there is no 'quot' escape inside 'serialize' method
+* The files in `./src` are now also included in the NPM distribution.
+* Add support for SASL-EXTERNAL
+
+## Version 1.2.7 - 2016-06-17
+* #193 Move phantomjs dependencies to devDependencies
+
+## Version 1.2.6 - 2016-06-06
+* #178 Added new value (CONNTIMEOUT) to Strophe.Status
+* #180 bosh: check sessionStorage support before using it
+* #182 Adding SASL OAuth Bearer authentication
+* #190 Fix .c() to accept both text and numbers as text for the child element
+* #192 User requirejs instead of require for node compat
+
+## Version 1.2.5 - 2016-02-09
+* Add a new Strophe.Connection option to add cookies
+* Add new Strophe.Connection option "withCredentials"
+
+## Version 1.2.4 - 2016-01-28
+* #147 Support for UTF-16 encoded usernames (e.g. Chinese)
+* #162 allow empty expectedFrom according to W3C DOM 3 Specification
+* #171 Improve invalid BOSH URL handling
+
 ## Version 1.2.3 - 2015-09-01
 * Bugfix. Check if JID is null when restoring a session.
 * #127 IE-Fix: error on setting null value with setAttributes
@@ -15,7 +71,7 @@
 * #121 Ensure that the node names of HTML elements copied into XHTML are lower case.
 * #124 Strophe's Builder will swallow elements if given a blank string as a 'text' parameter.
 
-## Version 1.2.1 - 2015-02-22 
+## Version 1.2.1 - 2015-02-22
 * Rerelease of 1.2.0 but with a semver tag and proper formatting of bower.json
   for usage with Bower.io.
 

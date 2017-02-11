@@ -2,7 +2,7 @@
 session_start();
 //Check for POST (Login Attempt)
 require("config.php");
-
+require("prebind.php");
 //Check is Force_SSL = true
 if($FORCE_SSL == "true"){
 	if($_SERVER["HTTPS"] != "on")
@@ -172,11 +172,10 @@ $('#username').bind('keypress', function (event) {
 
 //Function to show the "dashboard" or "Global Lobby"
 function dsDash(){
-	global $html_title, $html_desc;
+	global $html_title, $html_desc, $http_bind, $fqdn_xmpp;
 	echo '';
 	?>
   <body onLoad="getRoomList()">
-	
 <div class="container">
   <div class="page-header">
     <center><h3>Create a room to begin chatting with friends!</h3><small>(Works better with Chrome/Firefox!)</small></center>
@@ -252,7 +251,18 @@ $('#room').bind('keypress', function (event) {
     }
 
 });
-
+</script>
+<script>
+require(['converse'], function (converse) {
+    converse.initialize({
+        bosh_service_url: '<?php echo $http_bind  ?>', // Please use this connection manager only for testing purposes
+        i18n: locales.en, // Refer to ./locale/locales.js to see which locales are supported
+        roster_groups: true,
+        show_controlbox_by_default: true,
+        authentication: 'prebind',
+        prebind_url: './pre.php'
+    });
+});
 </script>
 <div class="container">
 	<div class="row">
@@ -294,6 +304,8 @@ function head(){
     <script src='strophejs/strophe.roster.js'></script>
     <script src="js/bootstrap.js"></script>
 	<script src="js/dataTables.bootstrap.min.js"></script>
+	<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.conversejs.org/css/converse.min.css">
+	<script src="https://cdn.conversejs.org/dist/converse.min.js"></script>
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/dataTables.bootstrap.min.css">

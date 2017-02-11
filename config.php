@@ -15,7 +15,8 @@ XMPP Settings(External Only):<br />
 <b>Server:</b> gamingzone.space<br />
 <b>Port:</b> 5222<br />
 <b>TLS:</b>Prefer<br />
-<b>Username:</b> username@gamingzone.space
+<b>Username:</b> username@gamingzone.space<br />
+<br><em>Now with working private chat!</em>
 </div>'; //Second HTML Description.
 $DEBUG = "false"; // Enabling Debug Mode will disable the error handler modal (The popup that comes up when an error occurs for a user) and it enables logging so you can look at the log and see what happened.
 $FORCE_SSL = "true" //Force HTTPS for AirChat Users.

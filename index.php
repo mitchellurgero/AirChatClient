@@ -192,9 +192,12 @@ function dsDash(){
                 </div>
         <div class="panel-footer">&nbsp;</div>
         </div>     
-                
-    		
     	</div>-->
+            <div class="col-md-6">
+				<p>
+    			<?php echo $html_desc2; ?>
+    			</p>
+            </div>
         <div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading"> <strong class="">Create a room:</strong>
@@ -229,13 +232,8 @@ function dsDash(){
                     </form>
                     
                 </div>
-                <div class="panel-footer"><a href="logout.php" class="pull-right">Logout</a><br></div>
+                <div class="panel-footer"><a href="logout.php">Logout</a><br></div>
                 </div>
-            </div>
-            <div class="col-md-6">
-				<p>
-    			<?php echo $html_desc2; ?>
-    			</p>
             </div>
         </div>
     </div>
@@ -263,7 +261,8 @@ require(['converse'], function (converse) {
         bosh_service_url: '<?php echo $http_bind  ?>', // Please use this connection manager only for testing purposes
         i18n: locales.en, // Refer to ./locale/locales.js to see which locales are supported
         roster_groups: true,
-        show_controlbox_by_default: true,
+        show_controlbox_by_default: false,
+        default_domain: '<?php echo $fqdn_xmpp; ?>',
         authentication: 'prebind',
         prebind_url: './pre.php'
     });

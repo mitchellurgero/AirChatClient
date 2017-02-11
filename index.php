@@ -172,7 +172,7 @@ $('#username').bind('keypress', function (event) {
 
 //Function to show the "dashboard" or "Global Lobby"
 function dsDash(){
-	global $html_title, $html_desc, $http_bind, $fqdn_xmpp;
+	global $html_title, $html_desc,$html_desc2, $http_bind, $fqdn_xmpp;
 	echo '';
 	?>
   <body onLoad="getRoomList()">
@@ -182,7 +182,7 @@ function dsDash(){
     <center><small>Welcome, <?php echo $_SESSION['username'] ?>!</small></center>
   </div>
     <div class="row">
-    	<div class="col-md-6">
+    	<!--<div class="col-md-6">
     	<div class="panel panel-default" style="max-height: 600px;">
             <div class="panel-heading"> <strong class="">Current open Rooms:</strong></div>
                 <div class="panel-body">
@@ -194,7 +194,7 @@ function dsDash(){
         </div>     
                 
     		
-    	</div>
+    	</div>-->
         <div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading"> <strong class="">Create a room:</strong>
@@ -229,8 +229,13 @@ function dsDash(){
                     </form>
                     
                 </div>
-                <div class="panel-footer"><a href="logout.php">Logout</a></div>
+                <div class="panel-footer"><a href="logout.php" class="pull-right">Logout</a><br></div>
                 </div>
+            </div>
+            <div class="col-md-6">
+				<p>
+    			<?php echo $html_desc2; ?>
+    			</p>
             </div>
         </div>
     </div>

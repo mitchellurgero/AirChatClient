@@ -1,7 +1,10 @@
 ({
     baseUrl: ".",
-    name: "bower_components/almond/almond.js",
-    out: "strophe.js",
-    include: ['main'],
-    mainConfigFile: 'main.js'
+    name: "node_modules/almond/almond.js",
+    mainConfigFile: "main.js",
+    include: ["strophe"],
+    wrap: {
+        startFile: "src/start.frag",
+        endFile: "src/end.frag"
+    }
 })

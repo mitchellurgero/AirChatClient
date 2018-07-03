@@ -10,12 +10,16 @@
 
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
-        define('strophe-bosh', ['strophe-core'], function (core) {
+        define(['strophe-core'], function (core) {
             return factory(
                 core.Strophe,
                 core.$build
             );
         });
+    } else if (typeof exports === 'object') {
+        var core = require('./core');
+
+        module.exports = factory(core.Strophe, core.$build);
     } else {
         // Browser globals
         return factory(Strophe, $build);
@@ -85,7 +89,7 @@ Strophe.Request.prototype = {
         var node = null;
         if (this.xhr.responseXML && this.xhr.responseXML.documentElement) {
             node = this.xhr.responseXML.documentElement;
-            if (node.tagName == "parsererror") {
+            if (node.tagName === "parsererror") {
                 Strophe.error("invalid response received");
                 Strophe.error("responseText: " + this.xhr.responseText);
                 Strophe.error("responseXML: " +
@@ -93,11 +97,17 @@ Strophe.Request.prototype = {
                 throw "parsererror";
             }
         } else if (this.xhr.responseText) {
-            Strophe.error("invalid response received");
-            Strophe.error("responseText: " + this.xhr.responseText);
-            throw "badformat";
+            // In React Native, we may get responseText but no responseXML.  We can try to parse it manually.
+            Strophe.debug("Got responseText but no responseXML; attempting to parse it with DOMParser...");
+            node = new DOMParser().parseFromString(this.xhr.responseText, 'application/xml').documentElement;
+            if (!node) {
+                throw new Error('Parsing produced null node');
+            } else if (node.querySelector('parsererror')) {
+                Strophe.error("invalid response received: " + node.querySelector('parsererror').textContent);
+                Strophe.error("responseText: " + this.xhr.responseText);
+                throw "badformat";
+            }
         }
-
         return node;
     },
 
@@ -162,6 +172,8 @@ Strophe.Bosh = function(connection) {
     this.window = 5;
     this.errors = 0;
     this.inactivity = null;
+
+    this.lastResponseHeaders = null;
 
     this._requests = [];
 };
@@ -325,10 +337,10 @@ Strophe.Bosh.prototype = {
                    session.jid &&
                    (    typeof jid === "undefined" ||
                         jid === null ||
-                        Strophe.getBareJidFromJid(session.jid) == Strophe.getBareJidFromJid(jid) ||
+                        Strophe.getBareJidFromJid(session.jid) === Strophe.getBareJidFromJid(jid) ||
                         // If authcid is null, then it's an anonymous login, so
                         // we compare only the domains:
-                        ((Strophe.getNodeFromJid(jid) === null) && (Strophe.getDomainFromJid(session.jid) == jid))
+                        ((Strophe.getNodeFromJid(jid) === null) && (Strophe.getDomainFromJid(session.jid) === jid))
                     )
         ) {
             this._conn.restored = true;
@@ -369,13 +381,13 @@ Strophe.Bosh.prototype = {
     _connect_cb: function (bodyWrap) {
         var typ = bodyWrap.getAttribute("type");
         var cond, conflict;
-        if (typ !== null && typ == "terminate") {
+        if (typ !== null && typ === "terminate") {
             // an error occurred
             cond = bodyWrap.getAttribute("condition");
             Strophe.error("BOSH-Connection failed: " + cond);
             conflict = bodyWrap.getElementsByTagName("conflict");
             if (cond !== null) {
-                if (cond == "remote-stream-error" && conflict.length > 0) {
+                if (cond === "remote-stream-error" && conflict.length > 0) {
                     cond = "conflict";
                 }
                 this._conn._changeConnectStatus(Strophe.Status.CONNFAIL, cond);
@@ -468,26 +480,6 @@ Strophe.Bosh.prototype = {
         if (this.errors > 4) {
             this._conn._onDisconnectTimeout();
         }
-    },
-
-    /** PrivateFunction: _no_auth_received
-     *
-     * Called on stream start/restart when no stream:features
-     * has been received and sends a blank poll request.
-     */
-    _no_auth_received: function (_callback) {
-        if (_callback) {
-            _callback = _callback.bind(this._conn);
-        } else {
-            _callback = this._conn._connect_cb.bind(this._conn);
-        }
-        var body = this._buildBody();
-        this._requests.push(
-                new Strophe.Request(body.tree(),
-                    this._onRequestStateChange.bind(
-                        this, _callback.bind(this._conn)),
-                    body.tree().getAttribute("rid")));
-        this._throttledRequestHandler();
     },
 
     /** PrivateFunction: _onDisconnectTimeout
@@ -589,7 +581,7 @@ Strophe.Bosh.prototype = {
      */
     _getRequestStatus: function (req, def) {
         var reqStatus;
-        if (req.xhr.readyState == 4) {
+        if (req.xhr.readyState === 4) {
             try {
                 reqStatus = req.xhr.status;
             } catch (e) {
@@ -600,7 +592,7 @@ Strophe.Bosh.prototype = {
                     "reqStatus: " + reqStatus);
             }
         }
-        if (typeof(reqStatus) == "undefined") {
+        if (typeof(reqStatus) === "undefined") {
             reqStatus = typeof def === 'number' ? def : 0;
         }
         return reqStatus;
@@ -630,22 +622,25 @@ Strophe.Bosh.prototype = {
             return;
         }
         var reqStatus = this._getRequestStatus(req);
+        this.lastResponseHeaders = req.xhr.getAllResponseHeaders();
         if (this.disconnecting && reqStatus >= 400) {
             this._hitError(reqStatus);
             this._callProtocolErrorHandlers(req);
             return;
         }
 
-        if ((reqStatus > 0 && reqStatus < 500) || req.sends > 5) {
+        var valid_request = reqStatus > 0 && reqStatus < 500;
+        var too_many_retries = req.sends > this._conn.maxRetries;
+        if (valid_request || too_many_retries) {
             // remove from internal queue
             this._removeRequest(req);
             Strophe.debug("request id "+req.id+" should now be removed");
         }
 
-        if (reqStatus == 200) {
+        if (reqStatus === 200) {
             // request succeeded
-            var reqIs0 = (this._requests[0] == req);
-            var reqIs1 = (this._requests[1] == req);
+            var reqIs0 = (this._requests[0] === req);
+            var reqIs1 = (this._requests[1] === req);
             // if request 1 finished, or request 0 finished and request
             // 1 is over Strophe.SECONDARY_TIMEOUT seconds old, we need to
             // restart the other - both will be in the first spot, as the
@@ -673,8 +668,11 @@ Strophe.Bosh.prototype = {
         } else {
             Strophe.error("request id "+req.id+"."+req.sends+" error "+reqStatus+" happened");
         }
-        if (!(reqStatus > 0 && reqStatus < 500) || req.sends > 5) {
+
+        if (!valid_request && !too_many_retries) {
             this._throttledRequestHandler();
+        } else if (too_many_retries && !this._conn.connected) {
+            this._conn._changeConnectStatus(Strophe.Status.CONNFAIL, "giving-up");
         }
     },
 
@@ -703,7 +701,7 @@ Strophe.Bosh.prototype = {
                               time_elapsed > Math.floor(Strophe.TIMEOUT * this.wait));
         var secondaryTimeout = (req.dead !== null &&
                                 req.timeDead() > Math.floor(Strophe.SECONDARY_TIMEOUT * this.wait));
-        var requestCompletedWithServerError = (req.xhr.readyState == 4 &&
+        var requestCompletedWithServerError = (req.xhr.readyState === 4 &&
                                                (reqStatus < 1 || reqStatus >= 500));
         if (primaryTimeout || secondaryTimeout ||
             requestCompletedWithServerError) {
@@ -736,7 +734,7 @@ Strophe.Bosh.prototype = {
                     req.xhr.withCredentials = true;
                 }
             } catch (e2) {
-                Strophe.error("XHR open failed.");
+                Strophe.error("XHR open failed: " + e2.toString());
                 if (!this._conn.connected) {
                     this._conn._changeConnectStatus(
                             Strophe.Status.CONNFAIL, "bad-service");
@@ -761,7 +759,7 @@ Strophe.Bosh.prototype = {
             };
 
             // Implement progressive backoff for reconnects --
-            // First retry (send == 1) should also be instantaneous
+            // First retry (send === 1) should also be instantaneous
             if (req.sends > 1) {
                 // Using a cube of the retry number creates a nicely
                 // expanding retry window
@@ -805,7 +803,7 @@ Strophe.Bosh.prototype = {
         Strophe.debug("removing request");
         var i;
         for (i = this._requests.length - 1; i >= 0; i--) {
-            if (req == this._requests[i]) {
+            if (req === this._requests[i]) {
                 this._requests.splice(i, 1);
             }
         }
@@ -845,7 +843,7 @@ Strophe.Bosh.prototype = {
         try {
             return req.getResponse();
         } catch (e) {
-            if (e != "parsererror") { throw e; }
+            if (e !== "parsererror") { throw e; }
             this._conn.disconnect("strophe-parsererror");
         }
     },

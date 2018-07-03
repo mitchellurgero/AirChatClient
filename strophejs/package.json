@@ -1,7 +1,7 @@
 {
   "name": "strophe.js",
   "description": "Strophe.js is an XMPP library for JavaScript",
-  "version": "1.2.12",
+  "version": "1.2.15",
   "homepage": "http://strophe.im/strophejs",
   "repository": {
     "type": "git",
@@ -38,37 +38,22 @@
   "main": "strophe.js",
   "browser": "strophe.js",
   "scripts": {
-    "lint": "grunt",
-    "build": "grunt",
-    "clean": "grunt clean",
-    "doc": "grunt doc",
-    "release": "grunt release"
-  },
-  "engines": {
-    "browser": "*"
+    "lint": "make jshint",
+    "clean": "make clean",
+    "doc": "make doc"
   },
   "volo": {
     "url": "https://raw.githubusercontent.com/strophe/strophejs/release-{version}/strophe.js"
   },
   "devDependencies": {
-    "bower": "latest",
-    "grunt": "~1.0.1",
-    "grunt-cli": "~1.2.0",
-    "grunt-contrib-clean": "~1.0.0",
-    "grunt-contrib-concat": "~1.0.1",
-    "grunt-contrib-connect": "^1.0.2",
-    "grunt-contrib-copy": "~1.0.0",
-    "grunt-contrib-jshint": "~1.1.0",
-    "grunt-contrib-qunit": "^1.2.0",
-    "grunt-contrib-requirejs": "^1.0.0",
-    "grunt-contrib-uglify": "~2.0.0",
-    "grunt-contrib-watch": "~1.0.0",
-    "grunt-mkdir": "~1.0.0",
-    "grunt-natural-docs": "~1.0.1",
-    "grunt-shell": "~2.1.0",
-    "http-server": "^0.9.0",
-    "phantomjs": "~1.9.7-1",
-    "qunit-phantomjs-runner": "^2.1.0",
-    "requirejs": "~2.3.2"
+    "almond": "~0.3.0",
+    "http-server": "^0.10.0",
+    "jquery": "3.2.1",
+    "jshint": "^2.9.4",
+    "qunitjs": "~1.16.0",
+    "requirejs": "~2.3.2",
+    "run-headless-chromium": "^0.1.1",
+    "sinon": "1.17.7",
+    "sinon-qunit": "~2.0.0"
   }
 }

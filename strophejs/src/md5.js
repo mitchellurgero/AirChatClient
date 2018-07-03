@@ -6,21 +6,22 @@
  * Distributed under the BSD License
  * See http://pajhome.org.uk/crypt/md5 for more info.
  */
-
 /*
  * Everything that isn't used by Strophe has been stripped here!
  */
 
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
-        define('strophe-md5', function () {
+        define([], function () {
             return factory();
         });
+    } else if (typeof exports === 'object') {
+        module.exports = factory();
     } else {
         // Browser globals
         root.MD5 = factory();
     }
-}(this, function (b) {
+}(this, function () {
     /*
      * Add integers, wrapping at 2^32. This uses 16-bit operations internally
      * to work around bugs in some JS interpreters.

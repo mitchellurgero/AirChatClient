@@ -1,5 +1,26 @@
 # Strophe.js Change Log
 
+## Version 1.2.15 - (2018-05-21)
+* #259 XML element should be sent to xmlOutput
+* #266 Support Browserify/CommonJS. `require('strophe.js/src/wrapper')`
+* #296 Remove error handler from old websocket before closing
+* #271 SASL X-OAUTH2 authentication mechanism implemented 
+* #288 Strophe now logs fatal errors by default.
+* Run tests with headless Chromium instead of Phantomjs
+
+## Version 1.2.14 - 2017-06-15
+* #231 SASL OAuth Bearer authentication should not require a JID node, when a user identifer
+  can be retreived from the bearer token.
+* #250 Show XHR error message
+* #254 Set connection status to CONNFAIL after max retries
+* #255 Set CONNFAIL error status when connection fails on Safari 10
+
+## Version 1.2.13 - 2017-02-25
+
+* Use almond to create the build. This means that the build itself is an AMD
+  module and can be loaded via `require`.
+* Remove Grunt as a build tool.
+
 ## Version 1.2.12 - 2017-01-15
 
 * Reduce the priority of the SASL-EXTERNAL auth mechanism. OpenFire 4.1.1

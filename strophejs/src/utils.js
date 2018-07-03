@@ -1,8 +1,10 @@
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
-        define('strophe-utils', function () {
+        define([], function () {
             return factory();
         });
+    } else if (typeof exports === 'object') {
+        module.exports = factory();
     } else {
         // Browser globals
         root.stropheUtils = factory();
@@ -57,7 +59,7 @@
                 domain = '';
                 path = '';
                 cookieObj = cookies[cookieName];
-                isObj = typeof cookieObj == "object";
+                isObj = typeof cookieObj === "object";
                 cookieValue = escape(unescape(isObj ? cookieObj.value : cookieObj));
                 if (isObj) {
                     expires = cookieObj.expires ? ";expires="+cookieObj.expires : '';
